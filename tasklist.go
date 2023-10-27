@@ -28,21 +28,21 @@ func Extract(body string) (Tasklist, error) {
 	var tasks []Task
 
 	var blankInTasklist bool
-	var whatLineInTasklist int
+	var posInTasklist int
 
 	for _, line := range strings.Split(body, "\n") {
 		if strings.HasPrefix(line, tasklistPrefix) {
-			whatLineInTasklist = 1
+			posInTasklist = 1
 			continue
 		}
 
-		if whatLineInTasklist == 0 {
+		if posInTasklist == 0 {
 			continue
 		}
 
 		if line == "" {
 			blankInTasklist = true
-			whatLineInTasklist += 1
+			posInTasklist += 1
 			continue
 		}
 
@@ -51,26 +51,26 @@ func Extract(body string) (Tasklist, error) {
 		}
 
 		if strings.HasPrefix(line, "### ") {
-			if whatLineInTasklist != 1 {
+			if posInTasklist != 1 {
 				return Tasklist{}, fmt.Errorf("invalid tasklist format")
 			}
 
 			title = strings.TrimPrefix(line, "### ")
-			whatLineInTasklist += 1
+			posInTasklist += 1
 			continue
 		}
 
 		if strings.HasPrefix(line, gfmCheckboxUncheckedPrefix) {
 			task := Task{Text: strings.TrimPrefix(line, gfmCheckboxUncheckedPrefix), Checked: false}
 			tasks = append(tasks, task)
-			whatLineInTasklist += 1
+			posInTasklist += 1
 			continue
 		}
 
 		if strings.HasPrefix(line, gfmCheckboxCheckedSuffix) {
 			task := Task{Text: strings.TrimPrefix(line, gfmCheckboxCheckedSuffix), Checked: true}
 			tasks = append(tasks, task)
-			whatLineInTasklist += 1
+			posInTasklist += 1
 			continue
 		}
 
