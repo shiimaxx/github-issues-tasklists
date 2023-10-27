@@ -1,10 +1,5 @@
-# github-issues-tasklists
+//go:build ignore
 
-Simple library to parse [GitHub Issues tasklists](https://docs.github.com/en/issues/managing-your-tasks-with-tasklists).
-
-## Example
-
-```go
 package main
 
 import (
@@ -56,4 +51,3 @@ func main() {
 	// - [ ] New item
 	// ```
 }
-```

@@ -6,25 +6,26 @@ import (
 )
 
 const (
-	gfmCheckboxUnchecked = "- [ ] "
-	gfmCheckboxChecked   = "- [x] "
-	tasklistPrefix       = "```[tasklist]"
-	tasklistSuffix       = "```"
+	gfmCheckboxUncheckedPrefix = "- [ ] "
+	gfmCheckboxCheckedSuffix   = "- [x] "
+
+	tasklistPrefix = "```[tasklist]"
+	tasklistSuffix = "```"
 )
 
 type Tasklist struct {
 	Title string
-	Items []Item
+	Tasks []Task
 }
 
-type Item struct {
-	Text string
-	Done bool
+type Task struct {
+	Text    string
+	Checked bool
 }
 
 func Extract(body string) (Tasklist, error) {
 	var title string
-	var items []Item
+	var tasks []Task
 
 	var blankInTasklist bool
 	var whatLineInTasklist int
@@ -59,16 +60,16 @@ func Extract(body string) (Tasklist, error) {
 			continue
 		}
 
-		if strings.HasPrefix(line, gfmCheckboxUnchecked) {
-			item := Item{Text: strings.TrimPrefix(line, gfmCheckboxUnchecked), Done: false}
-			items = append(items, item)
+		if strings.HasPrefix(line, gfmCheckboxUncheckedPrefix) {
+			task := Task{Text: strings.TrimPrefix(line, gfmCheckboxUncheckedPrefix), Checked: false}
+			tasks = append(tasks, task)
 			whatLineInTasklist += 1
 			continue
 		}
 
-		if strings.HasPrefix(line, gfmCheckboxChecked) {
-			item := Item{Text: strings.TrimPrefix(line, gfmCheckboxChecked), Done: true}
-			items = append(items, item)
+		if strings.HasPrefix(line, gfmCheckboxCheckedSuffix) {
+			task := Task{Text: strings.TrimPrefix(line, gfmCheckboxCheckedSuffix), Checked: true}
+			tasks = append(tasks, task)
 			whatLineInTasklist += 1
 			continue
 		}
@@ -80,7 +81,7 @@ func Extract(body string) (Tasklist, error) {
 		return Tasklist{}, fmt.Errorf("invalid tasklist format")
 	}
 
-	return Tasklist{Title: title, Items: items}, nil
+	return Tasklist{Title: title, Tasks: tasks}, nil
 }
 
 func (t *Tasklist) Render() string {
@@ -90,11 +91,11 @@ func (t *Tasklist) Render() string {
 	if t.Title != "" {
 		fmt.Fprintf(&builder, "### %s\n", t.Title)
 	}
-	for _, item := range t.Items {
-		if item.Done {
-			fmt.Fprintf(&builder, "%s%s\n", gfmCheckboxChecked, item.Text)
+	for _, t := range t.Tasks {
+		if t.Checked {
+			fmt.Fprintf(&builder, "%s%s\n", gfmCheckboxCheckedSuffix, t.Text)
 		} else {
-			fmt.Fprintf(&builder, "%s%s\n", gfmCheckboxUnchecked, item.Text)
+			fmt.Fprintf(&builder, "%s%s\n", gfmCheckboxUncheckedPrefix, t.Text)
 		}
 	}
 	fmt.Fprint(&builder, tasklistSuffix)

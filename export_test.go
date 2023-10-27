@@ -1,8 +1,9 @@
 package tasklists
 
 const (
-	GfmCheckboxUnchecked = gfmCheckboxUnchecked
-	GfmCheckboxChecked   = gfmCheckboxChecked
-	TasklistPrefix       = tasklistPrefix
-	TasklistSuffix       = tasklistSuffix
+	GfmCheckboxUncheckedPrefix = gfmCheckboxUncheckedPrefix
+	GfmCheckboxCheckedSuffix   = gfmCheckboxCheckedSuffix
+
+	TasklistPrefix = tasklistPrefix
+	TasklistSuffix = tasklistSuffix
 )

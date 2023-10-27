@@ -2,7 +2,6 @@ package tasklists_test
 
 import (
 	"fmt"
-	"os"
 	"testing"
 
 	tasklists "github.com/shiimaxx/github-issues-tasklists"
@@ -24,10 +23,10 @@ func TestExtract(t *testing.T) {
 %s`,
 			want: tasklists.Tasklist{
 				Title: "",
-				Items: []tasklists.Item{
-					{Text: "https://github.com/shiimaxx/github-tasklist/issues/123", Done: true},
-					{Text: "https://github.com/shiimaxx/github-tasklist/issues/124", Done: false},
-					{Text: "Draft", Done: false},
+				Tasks: []tasklists.Task{
+					{Text: "https://github.com/shiimaxx/github-tasklist/issues/123", Checked: true},
+					{Text: "https://github.com/shiimaxx/github-tasklist/issues/124", Checked: false},
+					{Text: "Draft", Checked: false},
 				},
 			},
 		},
@@ -42,10 +41,10 @@ func TestExtract(t *testing.T) {
 %s`,
 			want: tasklists.Tasklist{
 				Title: "asdf",
-				Items: []tasklists.Item{
-					{Text: "https://github.com/shiimaxx/github-tasklist/issues/123", Done: true},
-					{Text: "https://github.com/shiimaxx/github-tasklist/issues/124", Done: false},
-					{Text: "Draft", Done: false},
+				Tasks: []tasklists.Task{
+					{Text: "https://github.com/shiimaxx/github-tasklist/issues/123", Checked: true},
+					{Text: "https://github.com/shiimaxx/github-tasklist/issues/124", Checked: false},
+					{Text: "Draft", Checked: false},
 				},
 			},
 		},
@@ -61,10 +60,10 @@ func TestExtract(t *testing.T) {
 %s`,
 			want: tasklists.Tasklist{
 				Title: "asdf",
-				Items: []tasklists.Item{
-					{Text: "https://github.com/shiimaxx/github-tasklist/issues/123", Done: true},
-					{Text: "https://github.com/shiimaxx/github-tasklist/issues/124", Done: false},
-					{Text: "Draft", Done: false},
+				Tasks: []tasklists.Task{
+					{Text: "https://github.com/shiimaxx/github-tasklist/issues/123", Checked: true},
+					{Text: "https://github.com/shiimaxx/github-tasklist/issues/124", Checked: false},
+					{Text: "Draft", Checked: false},
 				},
 			},
 		},
@@ -81,15 +80,15 @@ func TestExtract(t *testing.T) {
 				t.Errorf("got %s, want %s", got, want)
 			}
 
-			if got, want := len(got.Items), len(c.want.Items); got != want {
+			if got, want := len(got.Tasks), len(c.want.Tasks); got != want {
 				t.Errorf("got %d, want %d", got, want)
 			}
 
-			for i, item := range got.Items {
-				if got, want := item.Text, c.want.Items[i].Text; got != want {
+			for i, task := range got.Tasks {
+				if got, want := task.Text, c.want.Tasks[i].Text; got != want {
 					t.Errorf("got %s, want %s", got, want)
 				}
-				if got, want := item.Done, c.want.Items[i].Done; got != want {
+				if got, want := task.Checked, c.want.Tasks[i].Checked; got != want {
 					t.Errorf("got %v, want %v", got, want)
 				}
 			}
@@ -136,10 +135,10 @@ func TestExtract_invalidFormat(t *testing.T) {
 func TestRender(t *testing.T) {
 	tl := tasklists.Tasklist{
 		Title: "asdf",
-		Items: []tasklists.Item{
-			{Text: "https://github.com/shiimaxx/github-tasklist/issues/123", Done: true},
-			{Text: "https://github.com/shiimaxx/github-tasklist/issues/124", Done: false},
-			{Text: "Draft", Done: false},
+		Tasks: []tasklists.Task{
+			{Text: "https://github.com/shiimaxx/github-tasklist/issues/123", Checked: true},
+			{Text: "https://github.com/shiimaxx/github-tasklist/issues/124", Checked: false},
+			{Text: "Draft", Checked: false},
 		},
 	}
 
@@ -153,30 +152,4 @@ func TestRender(t *testing.T) {
 	if got := tl.Render(); got != want {
 		t.Errorf("got %s, want %s", got, want)
 	}
-}
-
-func TestReadme(t *testing.T) {
-    body := "example description\n"
-    body += "```[tasklist]"
-    body += `
-- [x] https://github.com/shiimaxx/github-tasklist/issues/123
-- [ ] https://github.com/shiimaxx/github-tasklist/issues/124
-- [ ] Draft
-`
-
-	tl, err := tasklists.Extract(body)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	fmt.Println(tl.Render())
-
-	tl.Items[0].Done = false
-
-	fmt.Println(tl.Render())
-
-	tl.Items = append(tl.Items, tasklists.Item{Text: "New item", Done: false})
-
-	fmt.Println(tl.Render())
 }
