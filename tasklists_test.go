@@ -96,6 +96,73 @@ func TestExtract(t *testing.T) {
 	}
 }
 
+func TestReplace(t *testing.T) {
+	cases := []struct {
+		name       string
+		inBody     string
+		inTasklist tasklists.Tasklist
+		want       string
+	}{
+		{
+			name: "toggle checked",
+			inBody: `example description
+%s
+- [x] https://github.com/shiimaxx/github-tasklist/issues/123
+- [ ] https://github.com/shiimaxx/github-tasklist/issues/124
+- [ ] Draft
+%s`,
+			inTasklist: tasklists.Tasklist{
+				Title: "",
+				Tasks: []tasklists.Task{
+					{Text: "https://github.com/shiimaxx/github-tasklist/issues/123", Checked: true},
+					{Text: "https://github.com/shiimaxx/github-tasklist/issues/124", Checked: true},
+					{Text: "Draft", Checked: false},
+				},
+			},
+			want: `example description
+%s
+- [x] https://github.com/shiimaxx/github-tasklist/issues/123
+- [x] https://github.com/shiimaxx/github-tasklist/issues/124
+- [ ] Draft
+%s`,
+		},
+		{
+			name: "add task",
+			inBody: `example description
+%s
+- [x] https://github.com/shiimaxx/github-tasklist/issues/123
+- [ ] https://github.com/shiimaxx/github-tasklist/issues/124
+- [ ] Draft
+%s`,
+			inTasklist: tasklists.Tasklist{
+				Title: "",
+				Tasks: []tasklists.Task{
+					{Text: "https://github.com/shiimaxx/github-tasklist/issues/123", Checked: true},
+					{Text: "https://github.com/shiimaxx/github-tasklist/issues/124", Checked: false},
+					{Text: "Draft", Checked: false},
+					{Text: "New task", Checked: false},
+				},
+			},
+			want: `example description
+%s
+- [x] https://github.com/shiimaxx/github-tasklist/issues/123
+- [ ] https://github.com/shiimaxx/github-tasklist/issues/124
+- [ ] Draft
+- [ ] New task
+%s`,
+		},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			inBody := fmt.Sprintf(c.inBody, tasklists.TasklistPrefix, tasklists.TasklistSuffix)
+			if got, want := tasklists.Replace(inBody, c.inTasklist), fmt.Sprintf(c.want, tasklists.TasklistPrefix, tasklists.TasklistSuffix); got != want {
+				t.Errorf("got %s, want %s", got, want)
+			}
+		})
+	}
+}
+
 func TestExtract_invalidFormat(t *testing.T) {
 	cases := []struct {
 		name string
