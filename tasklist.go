@@ -24,58 +24,55 @@ type Task struct {
 }
 
 func Extract(body string) (Tasklist, error) {
+	return extract(body)
+}
+
+func extract(body string) (Tasklist, error) {
+	lines := strings.Split(body, "\n")
+
+	var i int
 	var title string
-	var tasks []Task
 
-	var blankInTasklist bool
-	var posInTasklist int
-
-	for _, line := range strings.Split(body, "\n") {
-		if strings.HasPrefix(line, tasklistPrefix) {
-			posInTasklist = 1
-			continue
-		}
-
-		if posInTasklist == 0 {
-			continue
-		}
-
-		if line == "" {
-			blankInTasklist = true
-			posInTasklist += 1
-			continue
-		}
-
-		if blankInTasklist && (line != "" && line != tasklistSuffix) {
-			return Tasklist{}, fmt.Errorf("blank line must be only end of tasklist")
-		}
-
-		if strings.HasPrefix(line, "### ") {
-			if posInTasklist != 1 {
-				return Tasklist{}, fmt.Errorf("invalid tasklist format")
+	// seek to beginning of tasklist
+	for i < len(lines) {
+		if strings.HasPrefix(lines[i], tasklistPrefix) {
+			// peek next line to check if title exists
+			if strings.HasPrefix(lines[i+1], "### ") {
+				title = strings.TrimPrefix(lines[i+1], "### ")
+				i += 1
 			}
-
-			title = strings.TrimPrefix(line, "### ")
-			posInTasklist += 1
-			continue
-		}
-
-		if strings.HasPrefix(line, gfmCheckboxUncheckedPrefix) {
-			task := Task{Text: strings.TrimPrefix(line, gfmCheckboxUncheckedPrefix), Checked: false}
-			tasks = append(tasks, task)
-			posInTasklist += 1
-			continue
-		}
-
-		if strings.HasPrefix(line, gfmCheckboxCheckedSuffix) {
-			task := Task{Text: strings.TrimPrefix(line, gfmCheckboxCheckedSuffix), Checked: true}
-			tasks = append(tasks, task)
-			posInTasklist += 1
-			continue
-		}
-
-		if strings.HasPrefix(line, tasklistSuffix) {
+			i += 1
 			break
+		}
+		i += 1
+	}
+
+	var tasks []Task
+	for i < len(lines) {
+		if strings.HasPrefix(lines[i], gfmCheckboxUncheckedPrefix) {
+			task := Task{Text: strings.TrimPrefix(lines[i], gfmCheckboxUncheckedPrefix), Checked: false}
+			tasks = append(tasks, task)
+			i += 1
+			continue
+		}
+
+		if strings.HasPrefix(lines[i], gfmCheckboxCheckedSuffix) {
+			task := Task{Text: strings.TrimPrefix(lines[i], gfmCheckboxCheckedSuffix), Checked: true}
+			tasks = append(tasks, task)
+			i += 1
+			continue
+		}
+
+		if strings.HasPrefix(lines[i], tasklistSuffix) {
+			break
+		}
+
+		if lines[i] == "" {
+			i += 1
+			if lines[i] == tasklistSuffix {
+				break
+			}
+			return Tasklist{}, fmt.Errorf("blank line must be only end of tasklist")
 		}
 
 		return Tasklist{}, fmt.Errorf("invalid tasklist format")
