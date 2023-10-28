@@ -37,10 +37,26 @@ func extract(body string) (Tasklist, error) {
 	for i < len(lines) {
 		if strings.HasPrefix(lines[i], tasklistPrefix) {
 			// peek next line to check if title exists
-			if strings.HasPrefix(lines[i+1], "### ") {
+			if strings.HasPrefix(lines[i+1], "# ") {
+				title = strings.TrimPrefix(lines[i+1], "# ")
+				i += 1
+			} else if strings.HasPrefix(lines[i+1], "## ") {
+				title = strings.TrimPrefix(lines[i+1], "## ")
+				i += 1
+			} else if strings.HasPrefix(lines[i+1], "### ") {
 				title = strings.TrimPrefix(lines[i+1], "### ")
 				i += 1
+			} else if strings.HasPrefix(lines[i+1], "#### ") {
+				title = strings.TrimPrefix(lines[i+1], "#### ")
+				i += 1
+			} else if strings.HasPrefix(lines[i+1], "##### ") {
+				title = strings.TrimPrefix(lines[i+1], "##### ")
+				i += 1
+			} else if strings.HasPrefix(lines[i+1], "###### ") {
+				title = strings.TrimPrefix(lines[i+1], "###### ")
+				i += 1
 			}
+
 			i += 1
 			break
 		}
