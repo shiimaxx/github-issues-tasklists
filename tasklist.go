@@ -23,6 +23,31 @@ type Task struct {
 	Checked bool
 }
 
+func Replace(body string, tl Tasklist) string {
+	var begin, end int
+
+	lines := strings.Split(body, "\n")
+
+	for i, line := range lines {
+		if strings.HasPrefix(line, tasklistPrefix) {
+			begin = i
+			continue
+		}
+		if strings.HasPrefix(line, tasklistSuffix) {
+			end = i
+			break
+		}
+	}
+
+	var replaced string
+	replaced += strings.Join(lines[:begin], "\n")
+	replaced += "\n"
+	replaced += tl.Render()
+	replaced += strings.Join(lines[end+1:], "\n")
+
+	return replaced
+}
+
 func Extract(body string) (Tasklist, error) {
 	return extract(body)
 }
