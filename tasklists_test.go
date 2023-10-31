@@ -71,7 +71,7 @@ func TestExtract(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			got, err := tasklists.Extract(fmt.Sprintf(c.in, tasklists.TasklistPrefix, tasklists.TasklistSuffix))
+			got, err := tasklists.Extract(fmt.Sprintf(c.in, tasklists.TasklistBegin, tasklists.TasklistEnd))
 			if err != nil {
 				t.Errorf("unexpected error: %s", err)
 			}
@@ -155,8 +155,8 @@ func TestReplace(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			inBody := fmt.Sprintf(c.inBody, tasklists.TasklistPrefix, tasklists.TasklistSuffix)
-			if got, want := tasklists.Replace(inBody, c.inTasklist), fmt.Sprintf(c.want, tasklists.TasklistPrefix, tasklists.TasklistSuffix); got != want {
+			inBody := fmt.Sprintf(c.inBody, tasklists.TasklistBegin, tasklists.TasklistEnd)
+			if got, want := tasklists.Replace(inBody, c.inTasklist), fmt.Sprintf(c.want, tasklists.TasklistBegin, tasklists.TasklistEnd); got != want {
 				t.Errorf("got %s, want %s", got, want)
 			}
 		})
@@ -191,7 +191,7 @@ func TestExtract_invalidFormat(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			_, err := tasklists.Extract(fmt.Sprintf(c.in, tasklists.TasklistPrefix, tasklists.TasklistSuffix))
+			_, err := tasklists.Extract(fmt.Sprintf(c.in, tasklists.TasklistBegin, tasklists.TasklistEnd))
 			if err == nil {
 				t.Errorf("expected error, but got nil")
 			}
@@ -214,7 +214,7 @@ func TestRender(t *testing.T) {
 - [x] https://github.com/shiimaxx/github-tasklist/issues/123
 - [ ] https://github.com/shiimaxx/github-tasklist/issues/124
 - [ ] Draft
-%s`, tasklists.TasklistPrefix, tasklists.TasklistSuffix)
+%s`, tasklists.TasklistBegin, tasklists.TasklistEnd)
 
 	if got := tl.Render(); got != want {
 		t.Errorf("got %s, want %s", got, want)

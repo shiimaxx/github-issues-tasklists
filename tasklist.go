@@ -9,8 +9,8 @@ const (
 	gfmCheckboxUncheckedPrefix = "- [ ] "
 	gfmCheckboxCheckedSuffix   = "- [x] "
 
-	tasklistPrefix = "```[tasklist]"
-	tasklistSuffix = "```"
+	tasklistBegin = "```[tasklist]"
+	tasklistEnd   = "```"
 )
 
 type Tasklist struct {
@@ -29,11 +29,11 @@ func Replace(body string, tl Tasklist) string {
 	lines := strings.Split(body, "\n")
 
 	for i, line := range lines {
-		if strings.HasPrefix(line, tasklistPrefix) {
+		if strings.HasPrefix(line, tasklistBegin) {
 			begin = i
 			continue
 		}
-		if strings.HasPrefix(line, tasklistSuffix) {
+		if strings.HasPrefix(line, tasklistEnd) {
 			end = i
 			break
 		}
@@ -60,7 +60,7 @@ func extract(body string) (Tasklist, error) {
 
 	// seek to beginning of tasklist
 	for i < len(lines) {
-		if strings.HasPrefix(lines[i], tasklistPrefix) {
+		if strings.HasPrefix(lines[i], tasklistBegin) {
 			// peek next line to check if title exists
 			if strings.HasPrefix(lines[i+1], "# ") {
 				title = strings.TrimPrefix(lines[i+1], "# ")
@@ -104,13 +104,13 @@ func extract(body string) (Tasklist, error) {
 			continue
 		}
 
-		if strings.HasPrefix(lines[i], tasklistSuffix) {
+		if strings.HasPrefix(lines[i], tasklistEnd) {
 			break
 		}
 
 		if lines[i] == "" {
 			i += 1
-			if lines[i] == tasklistSuffix {
+			if lines[i] == tasklistEnd {
 				break
 			}
 			return Tasklist{}, fmt.Errorf("blank line must be only end of tasklist")
@@ -125,7 +125,7 @@ func extract(body string) (Tasklist, error) {
 func (t *Tasklist) Render() string {
 	builder := strings.Builder{}
 
-	fmt.Fprintf(&builder, "%s\n", tasklistPrefix)
+	fmt.Fprintf(&builder, "%s\n", tasklistBegin)
 	if t.Title != "" {
 		fmt.Fprintf(&builder, "### %s\n", t.Title)
 	}
@@ -136,7 +136,7 @@ func (t *Tasklist) Render() string {
 			fmt.Fprintf(&builder, "%s%s\n", gfmCheckboxUncheckedPrefix, t.Text)
 		}
 	}
-	fmt.Fprint(&builder, tasklistSuffix)
+	fmt.Fprint(&builder, tasklistEnd)
 
 	return builder.String()
 }

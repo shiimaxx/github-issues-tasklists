@@ -4,6 +4,6 @@ const (
 	GfmCheckboxUncheckedPrefix = gfmCheckboxUncheckedPrefix
 	GfmCheckboxCheckedSuffix   = gfmCheckboxCheckedSuffix
 
-	TasklistPrefix = tasklistPrefix
-	TasklistSuffix = tasklistSuffix
+	TasklistBegin = tasklistBegin
+	TasklistEnd   = tasklistEnd
 )
