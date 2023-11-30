@@ -12,17 +12,17 @@ import (
 func main() {
 	body := "example description\n"
 	body += "\n"
-	body += "```[tasklist]]\n"
+	body += "```[tasklist]\n"
 	body += "- [x] https://github.com/shiimaxx/github-tasklist/issues/123\n"
 	body += "- [ ] https://github.com/shiimaxx/github-tasklist/issues/124\n"
 	body += "- [ ] Draft\n"
-	body += "```"
+	body += "```\n"
 
 	fmt.Println(body)
 	// Output:
 	// example description
 	//
-	// ```[tasklist]]
+	// ```[tasklist]
 	// - [x] https://github.com/shiimaxx/github-tasklist/issues/123
 	// - [ ] https://github.com/shiimaxx/github-tasklist/issues/124
 	// - [ ] Draft
