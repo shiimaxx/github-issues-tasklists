@@ -136,7 +136,7 @@ func (t *Tasklist) Render() string {
 			fmt.Fprintf(&builder, "%s%s\n", gfmCheckboxUncheckedPrefix, t.Text)
 		}
 	}
-	fmt.Fprint(&builder, tasklistEnd)
+	fmt.Fprintf(&builder, "%s\n", tasklistEnd)
 
 	return builder.String()
 }
