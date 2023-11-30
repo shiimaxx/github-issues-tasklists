@@ -110,7 +110,8 @@ func TestReplace(t *testing.T) {
 - [x] https://github.com/shiimaxx/github-tasklist/issues/123
 - [ ] https://github.com/shiimaxx/github-tasklist/issues/124
 - [ ] Draft
-%s`,
+%s
+`,
 			inTasklist: tasklists.Tasklist{
 				Title: "",
 				Tasks: []tasklists.Task{
@@ -124,7 +125,8 @@ func TestReplace(t *testing.T) {
 - [x] https://github.com/shiimaxx/github-tasklist/issues/123
 - [x] https://github.com/shiimaxx/github-tasklist/issues/124
 - [ ] Draft
-%s`,
+%s
+`,
 		},
 		{
 			name: "add task",
@@ -133,7 +135,8 @@ func TestReplace(t *testing.T) {
 - [x] https://github.com/shiimaxx/github-tasklist/issues/123
 - [ ] https://github.com/shiimaxx/github-tasklist/issues/124
 - [ ] Draft
-%s`,
+%s
+`,
 			inTasklist: tasklists.Tasklist{
 				Title: "",
 				Tasks: []tasklists.Task{
@@ -149,7 +152,8 @@ func TestReplace(t *testing.T) {
 - [ ] https://github.com/shiimaxx/github-tasklist/issues/124
 - [ ] Draft
 - [ ] New task
-%s`,
+%s
+`,
 		},
 	}
 
@@ -175,7 +179,8 @@ func TestExtract_invalidFormat(t *testing.T) {
 - x] https://github.com/shiimaxx/github-tasklist/issues/123
 - [ ] https://github.com/shiimaxx/github-tasklist/issues/124
 - [ ] Draft
-%s`,
+%s
+`,
 		},
 		{
 			name: "blank line except at the end",
@@ -185,7 +190,8 @@ func TestExtract_invalidFormat(t *testing.T) {
 
 - [ ] https://github.com/shiimaxx/github-tasklist/issues/124
 - [ ] Draft
-%s`,
+%s
+`,
 		},
 	}
 
@@ -214,7 +220,8 @@ func TestRender(t *testing.T) {
 - [x] https://github.com/shiimaxx/github-tasklist/issues/123
 - [ ] https://github.com/shiimaxx/github-tasklist/issues/124
 - [ ] Draft
-%s`, tasklists.TasklistBegin, tasklists.TasklistEnd)
+%s
+`, tasklists.TasklistBegin, tasklists.TasklistEnd)
 
 	if got := tl.Render(); got != want {
 		t.Errorf("got %s, want %s", got, want)
