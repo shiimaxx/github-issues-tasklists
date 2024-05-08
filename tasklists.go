@@ -119,7 +119,7 @@ func extract(body string) (Tasklist, error) {
 		return Tasklist{}, fmt.Errorf("invalid tasklist format")
 	}
 
-	return Tasklist{Title: title, Tasks: tasks}, nil
+	return Tasklist{Title: strings.TrimSpace(title), Tasks: tasks}, nil
 }
 
 func (t *Tasklist) Render() string {
